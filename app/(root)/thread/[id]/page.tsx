@@ -1,11 +1,11 @@
-import { redirect } from "next/navigation";
-import { currentUser } from "@clerk/nextjs";
+import { redirect } from 'next/navigation';
+import { currentUser } from '@clerk/nextjs';
 
-import Comment from "@/components/forms/Comment";
-import ThreadCard from "@/components/cards/ThreadCard";
+import Comment from '@/components/forms/Comment';
+import ThreadCard from '@/components/cards/ThreadCard';
 
-import { fetchUser } from "@/lib/actions/user.actions";
-import { fetchThreadById } from "@/lib/actions/thread.actions";
+import { fetchUser } from '@/lib/actions/user.actions';
+import { fetchThreadById } from '@/lib/actions/thread.actions';
 
 export const revalidate = 0;
 
@@ -16,7 +16,7 @@ async function page({ params }: { params: { id: string } }) {
   if (!user) return null;
 
   const userInfo = await fetchUser(user.id);
-  if (!userInfo?.onboarded) redirect("/onboarding");
+  if (!userInfo?.onboarded) redirect('/onboarding');
 
   const thread = await fetchThreadById(params.id);
 
@@ -29,9 +29,11 @@ async function page({ params }: { params: { id: string } }) {
           parentId={thread.parentId}
           content={thread.text}
           author={thread.author}
+          images={thread.images}
           community={thread.community}
           createdAt={thread.createdAt}
           comments={thread.children}
+          isLiked={thread.likeUsers.includes(user)}
         />
       </div>
 
@@ -56,6 +58,7 @@ async function page({ params }: { params: { id: string } }) {
             createdAt={childItem.createdAt}
             comments={childItem.children}
             isComment
+            isLiked={childItem.likeUsers.includes(user.id)}
           />
         ))}
       </div>

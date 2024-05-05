@@ -1,9 +1,9 @@
-import { redirect } from "next/navigation";
+import { redirect } from 'next/navigation';
 
-import { fetchCommunityPosts } from "@/lib/actions/community.actions";
-import { fetchUserPosts } from "@/lib/actions/user.actions";
+import { fetchCommunityPosts } from '@/lib/actions/community.actions';
+import { fetchUserPosts } from '@/lib/actions/user.actions';
 
-import ThreadCard from "../cards/ThreadCard";
+import ThreadCard from '../cards/ThreadCard';
 
 interface Result {
   name: string;
@@ -13,6 +13,7 @@ interface Result {
     _id: string;
     text: string;
     parentId: string | null;
+    images: string[];
     author: {
       name: string;
       image: string;
@@ -41,14 +42,14 @@ interface Props {
 async function ThreadsTab({ currentUserId, accountId, accountType }: Props) {
   let result: Result;
 
-  if (accountType === "Community") {
+  if (accountType === 'Community') {
     result = await fetchCommunityPosts(accountId);
   } else {
     result = await fetchUserPosts(accountId);
   }
 
   if (!result) {
-    redirect("/");
+    redirect('/');
   }
 
   return (
@@ -60,8 +61,9 @@ async function ThreadsTab({ currentUserId, accountId, accountType }: Props) {
           currentUserId={currentUserId}
           parentId={thread.parentId}
           content={thread.text}
+          images={thread.images}
           author={
-            accountType === "User"
+            accountType === 'User'
               ? { name: result.name, image: result.image, id: result.id }
               : {
                   name: thread.author.name,
@@ -70,7 +72,7 @@ async function ThreadsTab({ currentUserId, accountId, accountType }: Props) {
                 }
           }
           community={
-            accountType === "Community"
+            accountType === 'Community'
               ? { name: result.name, id: result.id, image: result.image }
               : thread.community
           }

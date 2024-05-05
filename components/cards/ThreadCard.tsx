@@ -1,14 +1,16 @@
-import Image from "next/image";
-import Link from "next/link";
+import Image from 'next/image';
+import Link from 'next/link';
 
-import { formatDateString } from "@/lib/utils";
-import DeleteThread from "../forms/DeleteThread";
+import { formatDateString } from '@/lib/utils';
+import DeleteThread from '../forms/DeleteThread';
+import LikeThread from '../forms/LikeThread';
 
 interface Props {
   id: string;
   currentUserId: string;
   parentId: string | null;
   content: string;
+  images?: string[];
   author: {
     name: string;
     image: string;
@@ -26,6 +28,7 @@ interface Props {
     };
   }[];
   isComment?: boolean;
+  isLiked: boolean;
 }
 
 function ThreadCard({
@@ -34,15 +37,17 @@ function ThreadCard({
   parentId,
   content,
   author,
+  images = [],
   community,
   createdAt,
   comments,
   isComment,
+  isLiked,
 }: Props) {
   return (
     <article
       className={`flex w-full flex-col rounded-xl ${
-        isComment ? "px-0 xs:px-7" : "bg-dark-2 p-7"
+        isComment ? 'px-0 xs:px-7' : 'bg-dark-2 p-7'
       }`}
     >
       <div className='flex items-start justify-between'>
@@ -68,15 +73,39 @@ function ThreadCard({
             </Link>
 
             <p className='mt-2 text-small-regular text-light-2'>{content}</p>
-
-            <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
+            {images.length > 0 && (
+              <div
+                className={`mt-5 grid gap-2 ${
+                  images.length === 1 ? 'grid-cols-1' : 'grid-cols-2'
+                }`}
+              >
+                {images.map((imageSrc, index) => (
+                  <Link
+                    key={index}
+                    href={imageSrc}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    <div className='group relative h-96 w-full'>
+                      {' '}
+                      <Image
+                        src={imageSrc}
+                        alt={`thread_image_${index}`}
+                        layout='fill'
+                        objectFit='cover'
+                        className='cursor-pointer rounded-xl transition duration-300 ease-in-out group-hover:opacity-70'
+                      />
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+            <div className={`${isComment && 'mb-10'} mt-5 flex flex-col gap-3`}>
               <div className='flex gap-3.5'>
-                <Image
-                  src='/assets/heart-gray.svg'
-                  alt='heart'
-                  width={24}
-                  height={24}
-                  className='cursor-pointer object-contain'
+                <LikeThread
+                  threadId={id}
+                  currentUserId={currentUserId}
+                  isLiked={isLiked}
                 />
                 <Link href={`/thread/${id}`}>
                   <Image
@@ -106,7 +135,7 @@ function ThreadCard({
               {isComment && comments.length > 0 && (
                 <Link href={`/thread/${id}`}>
                   <p className='mt-1 text-subtle-medium text-gray-1'>
-                    {comments.length} repl{comments.length > 1 ? "ies" : "y"}
+                    {comments.length} repl{comments.length > 1 ? 'ies' : 'y'}
                   </p>
                 </Link>
               )}
@@ -132,13 +161,13 @@ function ThreadCard({
               alt={`user_${index}`}
               width={24}
               height={24}
-              className={`${index !== 0 && "-ml-5"} rounded-full object-cover`}
+              className={`${index !== 0 && '-ml-5'} rounded-full object-cover`}
             />
           ))}
 
           <Link href={`/thread/${id}`}>
             <p className='mt-1 text-subtle-medium text-gray-1'>
-              {comments.length} repl{comments.length > 1 ? "ies" : "y"}
+              {comments.length} repl{comments.length > 1 ? 'ies' : 'y'}
             </p>
           </Link>
         </div>
