@@ -202,6 +202,30 @@
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: #7878a3;
   }
+
+  .toast {
+    @apply flex-center;
+    background-color: #333;
+    color: #fff;
+    border-radius: 0.5rem;
+    /* padding: 1rem; */
+  }
+
+  .toast p {
+    @apply mb-4;
+  }
+
+  .toast button {
+    @apply mr-2 px-4 py-2 rounded-md;
+  }
+
+  .toast button:first-child {
+    @apply bg-gray-700 hover:bg-gray-600;
+  }
+
+  .toast button:last-child {
+    @apply bg-red-700 hover:bg-red-600;
+  }
 }
 
 /* Clerk Responsive fix */
